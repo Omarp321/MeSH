@@ -1,0 +1,25 @@
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+    networks:
+      - mesh-net
+
+  mesh:
+    build: .
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOST=elasticsearch:9200
+    networks:
+      - mesh-net
+    ports:
+      - "80:80"
+      - "443:443"
+
+networks:
+  mesh-net:
+    driver: bridge
